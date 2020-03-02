@@ -67,7 +67,6 @@ public class CryptoUtils {
 
             // write to new file
             String outFile = parts[0] + "." + parts[1];
-            System.out.println(outFile);
             FileUtils.write(outFile, output);
 
             // delete the encrypted file
