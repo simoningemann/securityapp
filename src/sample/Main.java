@@ -19,8 +19,13 @@ public class Main extends Application {
 
         char[] pw = PasswordUtils.getUserPassword();
 
-        for (String s : FileUtils.getAllFileNames("/home/simon/securitydemo/"))
-            CryptoUtils.encrypt(s, pw);
+        // encrypt all
+        for (String s : FileUtils.getAllFileNamesWOExt("/home/simon/securitydemo/", "aes"))
+            if (true) CryptoUtils.encrypt(s, pw);
+
+        // decrypt all
+        for (String s : FileUtils.getAllFileNames("/home/simon/securitydemo/", "aes"))
+            if (false) CryptoUtils.decrypt(s, pw);
 
         // standard dummy code
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));

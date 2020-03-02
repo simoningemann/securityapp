@@ -33,6 +33,10 @@ public class FileUtils {
         }
     }
 
+    public static void delete(String filePath) {
+        new File(filePath).delete();
+    }
+
     // getAllFileNamesWithExt:
     // returns a list of all filenames (strings) in a directory
     // that have the specified extension
@@ -65,7 +69,24 @@ public class FileUtils {
             if (file.isFile()) {
                 String fname = file.getName();
                 String[] parts = fname.split("[.]");
-                if (parts[parts.length-1].equals(ext)) results.add(fname);
+                if (parts[parts.length-1].equals(ext)) results.add(dir + fname);
+            }
+        }
+        String[] names = new String[results.size()];
+        for (int i=0; i<names.length; i++) {
+            names[i] = results.get(i);
+        }
+        return names;
+    }
+
+    public static String[] getAllFileNamesWOExt(String dir, String ext) {
+        ArrayList<String> results = new ArrayList<String>();
+        File[] files = new File(dir).listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                String fname = file.getName();
+                String[] parts = fname.split("[.]");
+                if (!parts[parts.length-1].equals(ext)) results.add(dir + fname);
             }
         }
         String[] names = new String[results.size()];
