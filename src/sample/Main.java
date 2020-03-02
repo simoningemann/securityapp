@@ -17,7 +17,7 @@ public class Main extends Application {
         // add bouncy castle as security provider
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());//
 
-        for (String s : FileUtils.getAllFileNames("/home/simon/","js"))
+        for (String s : FileUtils.GetAllFileNames("/home/simon/","js"))
             System.out.println(s);
 
         // standard dummy code

@@ -10,7 +10,7 @@ public class FileUtils {
     // readAllBytes:
     // The method merely hides the use of Paths.
 
-    public static byte[] ReadAllBytes(String inputFile) {
+    public static byte[] readAllBytes(String inputFile) {
         byte[] bytesRead = {};
         try {
             bytesRead = Files.readAllBytes(Paths.get(inputFile));
