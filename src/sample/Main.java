@@ -15,9 +15,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         // add bouncy castle as security provider
-        addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());//
+        addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-        for (String s : FileUtils.getAllFileNames("/home/simon/"))
+        for (String s : FileUtils.getAllFileNames("/home/simon/securitydemo/"))
             System.out.println(s);
 
         // standard dummy code

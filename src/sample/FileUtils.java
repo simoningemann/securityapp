@@ -75,15 +75,14 @@ public class FileUtils {
         return names;
     }
 
-    //returns all file names from the given directory
+    //returns all file paths + names from the given directory
     public static String[] getAllFileNames(String dir) {
         ArrayList<String> results = new ArrayList<String>();
         File[] files = new File(dir).listFiles();
         for (File file : files) {
             if (file.isFile()) {
                 String fname = file.getName();
-                String[] parts = fname.split("[.]");
-                results.add(fname);
+                results.add(dir+fname);
             }
         }
         String[] names = new String[results.size()];
