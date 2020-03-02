@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+// remember to add the bouncy castle library file
 import static java.security.Security.addProvider;
 
 public class Main extends Application {
