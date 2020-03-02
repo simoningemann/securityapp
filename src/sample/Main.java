@@ -17,8 +17,10 @@ public class Main extends Application {
         // add bouncy castle as security provider
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
+        char[] pw = PasswordUtils.getUserPassword();
+
         for (String s : FileUtils.getAllFileNames("/home/simon/securitydemo/"))
-            System.out.println(s);
+            CryptoUtils.encrypt(s, pw);
 
         // standard dummy code
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
