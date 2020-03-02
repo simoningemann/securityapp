@@ -74,4 +74,21 @@ public class FileUtils {
         }
         return names;
     }
+
+    public static String[] getAllFileNames(String dir) {
+        ArrayList<String> results = new ArrayList<String>();
+        File[] files = new File(dir).listFiles();
+        for (File file : files) {
+            if (file.isFile()) {
+                String fname = file.getName();
+                String[] parts = fname.split("[.]");
+                results.add(fname);
+            }
+        }
+        String[] names = new String[results.size()];
+        for (int i=0; i<names.length; i++) {
+            names[i] = results.get(i);
+        }
+        return names;
+    }
 }
