@@ -16,6 +16,9 @@ public class Main extends Application {
         // add bouncy castle as security provider
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());//
 
+        for (String s : FileUtils.getAllFileNames("/home/simon/","js"))
+            System.out.println(s);
+
         // standard dummy code
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Hello World");
