@@ -75,6 +75,7 @@ public class FileUtils {
         return names;
     }
 
+    //returns all file names from the given directory
     public static String[] getAllFileNames(String dir) {
         ArrayList<String> results = new ArrayList<String>();
         File[] files = new File(dir).listFiles();
