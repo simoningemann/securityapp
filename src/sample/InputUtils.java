@@ -16,4 +16,52 @@ public class InputUtils {
         return password;
     }
 
+    public static char[] requireStrongPassword() {
+
+        int minLength = 10;
+        char [] password = prompt("Choose a password of at least " + minLength + " characters, which contains at least one capital letter, one lower case letter, one number and one symbol.");
+
+        while(password.length < minLength || !containsUpper(password) || !containsLower(password) || !containsDigit(password) || !containsSpecialCharacter(password))
+            password = prompt("Choose a password of at least " + minLength + " characters, which contains at least one capital letter, one lower case letter, one number and one special character.");
+        
+        return password;
+
+    }
+
+    public static boolean containsUpper (char[] string) {
+
+        for (char ch : string)
+            if (Character.isUpperCase(ch)) return true;
+
+        return false;
+
+    }
+
+    public static boolean containsLower (char[] string) {
+
+        for (char ch : string)
+            if (Character.isLowerCase(ch)) return true;
+
+        return false;
+
+    }
+
+    public static boolean containsDigit (char[] string) {
+
+        for (char ch : string)
+            if (Character.isDigit(ch)) return true;
+
+        return false;
+
+    }
+
+    public static boolean containsSpecialCharacter (char[] string) {
+
+        for (char ch : string)
+            if (!Character.isLetterOrDigit(ch)) return true;
+
+        return false;
+
+    }
+
 }

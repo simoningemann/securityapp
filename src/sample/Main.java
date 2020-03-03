@@ -17,7 +17,7 @@ public class Main extends Application {
         // add bouncy castle as security provider
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-        char[] pw = InputUtils.prompt("Input password please:");
+        char[] pw = InputUtils.requireStrongPassword();
         char action = InputUtils.prompt("Select action e or d:")[0];
 
         // decrypt all
