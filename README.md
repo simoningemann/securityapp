@@ -1,7 +1,8 @@
-# Programming for Security Project Spring 2020
+#FileSafe
+##### Programming for Security Project Spring 2020
 
 ## Introduction
-This is app will feature an graphical user interface, which will allow users to create their own profiles and encrypt/decrypt the files they own. The profiles will have passwords, which will be securely stored with hashing and salts. Users will be required to use strong passwords. The files will be encrypted using the advanced encryption standard, which features symmetric encryption with cipher block chaining and initialization vectors. The symmetric keys will also be stored securely using hashing. If there is time, users may be to securely share their symmetric keys, so they can share their encrypted files.
+This is app features a graphical user interface, which allows users to easily encrypt and decrypt their files. The user are required to use strong passwords for password based key derivation. The files are encrypted using the advanced encryption standard with cipher block chaining and initialization vectors. Upon encryption, the original files will be deleted automatically and the encrypted files will be hidden and the file names encrypted.
 
 ##Security Goals
 The primary purpose of this application is to allow the users to ensure the confidentiality of their files. In other terms, the information in the files should never be made available to any unauthorized entities.
@@ -11,6 +12,10 @@ Possible threats to the confidentiality of the user data could be:
 2. Technically authorized actors whom the user wishes to to hide the data from. This could be a cloud storage service provider, applications with access to the data, a technical supporter or similar.
 
 ##Security Design Patterns
+1. Symmetric encryption?
+2. PBKDF?
+3. CBC?
+4. IV?
 
 ##Tests
 ####Case 1: Authorization
@@ -25,7 +30,7 @@ __Demonstration__
 
 Lorem ipsum.
 ####Case 3: Decryption
-The user supplies the program with a directory path and presses the decrypt button instead. The program then decrypts the data of the files, writes it to now files and deletes the encrypted files. The files must now be readable and appear exactly as the original files.
+The user supplies the program with a directory path and presses the decrypt button instead. The program then decrypts the data of the files, writes it to new files and deletes the encrypted files. The files must now be readable and appear exactly as the original files.
 
 __Demonstration__
 
