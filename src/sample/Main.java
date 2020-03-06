@@ -18,17 +18,20 @@ public class Main extends Application {
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
         char[] pw = InputUtils.requireStrongPassword();
-        char action = InputUtils.prompt("Select action e or d:")[0];
+        char action = 's';
 
-        // decrypt all
-        if(action == 'd')
-        for (String s : FileUtils.getAllFileNames("/home/simon/securitydemo/", "aes"))
-            CryptoUtils.decrypt(s, pw);
+        while(action != 'f') {
+            action = InputUtils.prompt("Select action e or d:")[0];
+            // decrypt all
+            if(action == 'd')
+            for (String s : FileUtils.getAllFileNames("/home/simon/securitydemo/", "aes"))
+                CryptoUtils.decrypt(s, pw);
 
-        // encrypt all
-        if(action == 'e')
-        for (String s : FileUtils.getAllFileNamesWOExt("/home/simon/securitydemo/", "aes"))
-            CryptoUtils.encrypt(s, pw);
+            // encrypt all
+            if(action == 'e')
+            for (String s : FileUtils.getAllFileNamesWOExt("/home/simon/securitydemo/", "aes"))
+                CryptoUtils.encrypt(s, pw);
+        }
 
         // standard dummy code
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
