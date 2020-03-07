@@ -8,6 +8,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 
 public class CryptoUtils {
@@ -34,7 +35,17 @@ public class CryptoUtils {
 
             // write new encrypted file
             String ivString = Hex.toHexString(cipher.getIV());
-            String outFile = filePath + "." + ivString + "." + "aes";
+
+            String[] parts = filePath.split("/");
+            String newPath = "";
+            String name = Hex.toHexString(cipher.doFinal(parts[parts.length-1].getBytes(StandardCharsets.UTF_8)));
+
+            for (int i = 0; i < parts.length-1; i++)
+                newPath += parts[i] + "/";
+
+            newPath += "." + name;
+
+            String outFile = newPath + "." + ivString + "." + "aes";
             FileUtils.write(outFile, output);
 
             // delete the original file
@@ -47,7 +58,7 @@ public class CryptoUtils {
 
     public static void decrypt(String filePath, char[] password) {
         try {
-            // split up filePath: 0=originalpath, 1=originalextension, 2=iv, 3=aes
+            // split up filePath: 0=originalpath, 1=originalname, 2=originalextension, 3=iv, 4=aes
             String[] parts = filePath.split("[.]");
             // setup crypto preferences
             byte[] salt = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
@@ -65,8 +76,10 @@ public class CryptoUtils {
             // decrypt file
             byte[] output = cipher.doFinal(input);
 
+            String name = new String(cipher.doFinal(Hex.decode(parts[1])), StandardCharsets.UTF_8);
+
             // write to new file
-            String outFile = parts[0] + "." + parts[1];
+            String outFile = parts[0] + name;
             FileUtils.write(outFile, output);
 
             // delete the encrypted file
