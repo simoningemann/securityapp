@@ -1,5 +1,9 @@
 # FileSafe
-##### Programming for Security Project Spring 2020
+Programming for Security Project  
+Simon Ingemann Christensen  
+Spring 2020
+Roskilde University, Denmark
+
 
 ## Introduction
 This is app features a graphical user interface, which allows users to easily encrypt and decrypt their files. The user are required to use strong passwords for password based key derivation. The files are encrypted using the advanced encryption standard with cipher block chaining and initialization vectors. Upon encryption, the original files will be deleted automatically and the encrypted files will be hidden and the file names encrypted.
