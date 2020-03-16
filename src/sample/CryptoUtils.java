@@ -6,6 +6,7 @@ import javax.crypto.*;
 import javax.crypto.spec.*;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.security.interfaces.RSAPrivateKey;
 
 public class CryptoUtils {
 
@@ -166,4 +167,21 @@ public class CryptoUtils {
         }
         return secretKey;
     }
+
+    // sign some data with a private key
+    public static byte[] createSignature (byte[] input, PrivateKey privateKey) {
+        byte[] signature = {};
+        try {
+            Signature signer = Signature.getInstance("SHA256withRSA", "BC");
+            signer.initSign((RSAPrivateKey)privateKey);
+            signer.update(input);
+            signature = signer.sign();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return signature;
+    }
+
+    
 }
