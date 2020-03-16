@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 // remember to add the bouncy castle library file
+import javax.crypto.spec.SecretKeySpec;
+
 import static java.security.Security.addProvider;
 
 public class Main extends Application {
@@ -18,6 +20,7 @@ public class Main extends Application {
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
         char[] pw = InputUtils.requireStrongPassword();
+        SecretKeySpec secretKey = CryptoUtils.generateSecretKey(pw);
         char action = 's';
 
         while(action != 'f') {
@@ -25,12 +28,12 @@ public class Main extends Application {
             // decrypt all
             if(action == 'd')
             for (String s : FileUtils.getAllFileNames("/home/simon/securitydemo/", "aes"))
-                CryptoUtils.decrypt(s, pw);
+                CryptoUtils.decrypt(s, secretKey);
 
             // encrypt all
             if(action == 'e')
             for (String s : FileUtils.getAllFileNamesWOExt("/home/simon/securitydemo/", "aes"))
-                CryptoUtils.encrypt(s, pw);
+                CryptoUtils.encrypt(s, secretKey);
         }
 
         // standard dummy code
