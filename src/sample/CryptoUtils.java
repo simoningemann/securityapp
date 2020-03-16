@@ -9,6 +9,7 @@ import java.security.*;
 
 public class CryptoUtils {
 
+    // encrypts a file given a filepath+name and a password, then deletes the plaintext
     public static void encrypt(String filePath, char[] password){
         try {
             // setup crypto preferences
@@ -52,6 +53,7 @@ public class CryptoUtils {
         }
     }
 
+    // decrypts a file given a filepath+name and a password, then deletes the encrypted file
     public static void decrypt(String filePath, char[] password) {
         try {
             // split up filePath: 0=originalpath, 1=originalname, 2=originalextension, 3=iv, 4=aes
