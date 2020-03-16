@@ -86,6 +86,7 @@ public class CryptoUtils {
         }
     }
 
+    // encrypts a secret AES key with a public RSA key
     public static byte[] wrap(SecretKey secretKey, PublicKey publicKey) {
         byte[] b = {};
         try {
@@ -99,6 +100,7 @@ public class CryptoUtils {
         return b;
     }
 
+    // decrypts a secret AES key which has been encrypted with a public RSA key
     public static SecretKey unwrap(byte[] b, PrivateKey privateKey) {
         SecretKey secretKey = null;
         try {
