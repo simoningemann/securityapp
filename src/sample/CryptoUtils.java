@@ -168,13 +168,13 @@ public class CryptoUtils {
         return secretKey;
     }
 
-    // sign some data with a private key
-    public static byte[] createSignature (byte[] input, PrivateKey privateKey) {
+    // sign some data with a an RSA private key
+    public static byte[] createSignature (byte[] data, PrivateKey privateKey) {
         byte[] signature = {};
         try {
             Signature signer = Signature.getInstance("SHA256withRSA", "BC");
-            signer.initSign((RSAPrivateKey)privateKey);
-            signer.update(input);
+            signer.initSign(privateKey);
+            signer.update(data);
             signature = signer.sign();
         }
         catch (Exception e) {
@@ -183,5 +183,17 @@ public class CryptoUtils {
         return signature;
     }
 
-    
+    // verifies that the data was signed by the owner of the RSA private key
+    public static Boolean verifySignature (byte[] data, byte[] signature, PublicKey publicKey) {
+        try {
+            Signature verifier = Signature.getInstance("SHA256withRSA", "BC");
+            verifier.initVerify(publicKey);
+            verifier.update(data);
+            return verifier.verify(signature);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
