@@ -159,4 +159,23 @@ public class CryptoUtils {
         }
         return keyPair;
     }
+
+    // generates an AES key based on password
+    public static SecretKeySpec generateSecretKey (char[] password) {
+        SecretKeySpec secretKey = new SecretKeySpec(new byte[] {}, "AES");
+        try {
+            SecureRandom secureRandom = SecureRandom.getInstance("DEFAULT", "BC");
+            byte[] generatedIV = new byte[16];
+            secureRandom.nextBytes(generatedIV);
+            byte[] salt = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+            SecretKeyFactory factory =   SecretKeyFactory.getInstance("PBKDF2WITHHMACSHA256", "BC");
+            SecretKey k = factory.generateSecret(new PBEKeySpec(password, salt, 1000, 128));
+            byte[] keyBytes = k.getEncoded();
+            secretKey = new SecretKeySpec(keyBytes, "AES");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return secretKey;
+    }
 }
