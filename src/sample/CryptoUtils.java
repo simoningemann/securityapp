@@ -2,14 +2,10 @@ package sample;
 
 import org.bouncycastle.util.encoders.Hex;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.*;
+import javax.crypto.spec.*;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
+import java.security.*;
 
 public class CryptoUtils {
 
@@ -88,5 +84,31 @@ public class CryptoUtils {
         } catch (Exception e)  {
             System.out.println(e.toString());
         }
+    }
+
+    public static byte[] wrap(SecretKey secretKey, PublicKey publicKey) {
+        byte[] b = {};
+        try {
+            Cipher cipher =
+                    Cipher.getInstance("RSA/NONE/OAEPwithSHA256andMGF1Padding", "BC");
+            cipher.init(Cipher.WRAP_MODE, publicKey);
+            b = cipher.wrap(secretKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+
+    public static SecretKey unwrap(byte[] b, PrivateKey privateKey) {
+        SecretKey secretKey = null;
+        try {
+            Cipher cipher =
+                    Cipher.getInstance("RSA/NONE/OAEPwithSHA256andMGF1Padding", "BC");
+            cipher.init(Cipher.UNWRAP_MODE, privateKey);
+            secretKey = (SecretKey) cipher.unwrap(b, "AES", Cipher.SECRET_KEY);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return secretKey;
     }
 }
