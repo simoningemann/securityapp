@@ -113,4 +113,48 @@ public class CryptoUtils {
         }
         return secretKey;
     }
+
+    // generate an RSA key pair
+    public static KeyPair generateKeyPair () {
+        KeyPair keyPair = new KeyPair(new PublicKey() {
+            @Override
+            public String getAlgorithm() {
+                return null;
+            }
+
+            @Override
+            public String getFormat() {
+                return null;
+            }
+
+            @Override
+            public byte[] getEncoded() {
+                return new byte[0];
+            }
+        }, new PrivateKey() {
+            @Override
+            public String getAlgorithm() {
+                return null;
+            }
+
+            @Override
+            public String getFormat() {
+                return null;
+            }
+
+            @Override
+            public byte[] getEncoded() {
+                return new byte[0];
+            }
+        });
+        try {
+            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "BC");
+            generator.initialize(2048);
+            keyPair = generator.generateKeyPair();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return keyPair;
+    }
 }
