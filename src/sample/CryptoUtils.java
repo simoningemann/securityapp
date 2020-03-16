@@ -151,7 +151,7 @@ public class CryptoUtils {
 
     // generates an AES key based on password
     public static SecretKeySpec generateSecretKey (char[] password) {
-        SecretKeySpec secretKey = new SecretKeySpec(new byte[] {}, "AES");
+        SecretKeySpec secretKey = new SecretKeySpec(new byte[] {1, 2}, "AES");
         try {
             SecureRandom secureRandom = SecureRandom.getInstance("DEFAULT", "BC");
             byte[] generatedIV = new byte[16];
@@ -184,7 +184,7 @@ public class CryptoUtils {
     }
 
     // verifies that the data was signed by the owner of the RSA private key
-    public static Boolean verifySignature (byte[] data, byte[] signature, PublicKey publicKey) {
+    public static boolean verifySignature (byte[] data, byte[] signature, PublicKey publicKey) {
         try {
             Signature verifier = Signature.getInstance("SHA256withRSA", "BC");
             verifier.initVerify(publicKey);
@@ -209,5 +209,26 @@ public class CryptoUtils {
             e.printStackTrace();
         }
         return hash;
+    }
+
+    public static boolean verifyHash(byte[] data, byte[] hashToVerify) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA256", "BC");
+            digest.update(data);
+            byte[] hash = digest.digest();
+
+            if(hash.length != hashToVerify.length)
+                return false;
+
+            //check if each byte matches
+            for (int i = 0; i < data.length; i++)
+                if (hash[i] != hashToVerify[i])
+                    return false;
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
