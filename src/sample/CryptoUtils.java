@@ -196,4 +196,18 @@ public class CryptoUtils {
         }
         return false;
     }
+
+    // get the SHA256 hash value of the input data
+    public static byte[] getHash (byte[] data) {
+        byte[] hash = {};
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA256", "BC");
+            digest.update(data);
+            hash = digest.digest();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return hash;
+    }
 }
