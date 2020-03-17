@@ -19,12 +19,9 @@ public class Main extends Application {
         // add bouncy castle as security provider
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-
-
-        String sysUser = System.getProperty("user.name");
-
-        String dir = "/home/" + sysUser + "/" + "filesafe";
+        String dir = System.getProperty("user.home") + "/" + "filesafe" + "/";
         FileUtils.makeDir(dir);
+        System.out.println("Place the files you want to encrypt inside " + dir);
         char[] pw = InputUtils.requireStrongPassword();
         SecretKeySpec secretKey = CryptoUtils.generateSecretKey(pw);
         char action = 's';
@@ -33,12 +30,12 @@ public class Main extends Application {
             action = InputUtils.prompt("Select action e or d:")[0];
             // decrypt all
             if(action == 'd')
-            for (String s : FileUtils.getAllFileNames("/home/simon/securitydemo/", "aes"))
+            for (String s : FileUtils.getAllFileNames(dir, "aes"))
                 CryptoUtils.decrypt(s, secretKey);
 
             // encrypt all
             if(action == 'e')
-            for (String s : FileUtils.getAllFileNamesWOExt("/home/simon/securitydemo/", "aes"))
+            for (String s : FileUtils.getAllFileNamesWOExt(dir, "aes"))
                 CryptoUtils.encrypt(s, secretKey);
         }
 
