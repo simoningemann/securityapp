@@ -19,13 +19,19 @@ public class Main extends Application {
         // add bouncy castle as security provider
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
+        // setup variables and make filesafe directory of none exists
         String dir = System.getProperty("user.home") + "/" + "filesafe" + "/";
         FileUtils.makeDir(dir);
-        System.out.println("Place the files you want to encrypt inside " + dir);
-        char[] pw = InputUtils.requireStrongPassword();
-        SecretKeySpec secretKey = CryptoUtils.generateSecretKey(pw);
         char action = 's';
 
+        // instruct user to put files in filesafe directory and prompt for strong password
+        System.out.println("Place the files you want to encrypt inside " + dir);
+        char[] pw = InputUtils.requireStrongPassword();
+
+        // generate secret key with PBKDF
+        SecretKeySpec secretKey = CryptoUtils.generateSecretKey(pw);
+
+        // listen for user action
         while(action != 'f') {
             action = InputUtils.prompt("Select action e or d:")[0];
             // decrypt all
