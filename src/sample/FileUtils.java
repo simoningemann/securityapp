@@ -112,4 +112,9 @@ public class FileUtils {
         }
         return names;
     }
+
+    public static void makeDir (String dirName) {
+        File dir = new File(dirName);
+        dir.mkdir();
+    }
 }

@@ -19,6 +19,12 @@ public class Main extends Application {
         // add bouncy castle as security provider
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
+
+
+        String sysUser = System.getProperty("user.name");
+
+        String dir = "/home/" + sysUser + "/" + "filesafe";
+        FileUtils.makeDir(dir);
         char[] pw = InputUtils.requireStrongPassword();
         SecretKeySpec secretKey = CryptoUtils.generateSecretKey(pw);
         char action = 's';
