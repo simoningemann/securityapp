@@ -1,5 +1,6 @@
 package sample;
 
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.File;
@@ -116,5 +117,14 @@ public class FileUtils {
     public static void makeDir (String dirName) {
         File dir = new File(dirName);
         dir.mkdir();
+    }
+
+    public static boolean dirContainsFileName(String dir, String fileName) {
+        File[] files = new File(dir).listFiles();
+        for (File file : files)
+            if (file.isFile() && (file.getName().equals(fileName)))
+                return true;
+            
+        return false;
     }
 }

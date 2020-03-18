@@ -4,6 +4,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 import javax.crypto.*;
 import javax.crypto.spec.*;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 public class CryptoUtils {
 
     // encrypts a file given a filepath+name and a password, then deletes the plaintext
-    public static void encrypt(String filePath, SecretKeySpec secretKey){
+    public static void encrypt(String filePath, SecretKeySpec secretKey, String hashDir){
         try {
             // setup crypto preferences
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
@@ -20,6 +21,10 @@ public class CryptoUtils {
 
             // read the file
             byte[] file = FileUtils.readAllBytes(filePath);
+
+            // hash the file with the key
+            byte[] hash = getHash(concatenate(secretKey.getEncoded(), file));
+            FileUtils.write(hashDir + Hex.toHexString(hash), hash);
 
             // encrypt the file
             byte[] output = cipher.doFinal(file);
@@ -36,7 +41,7 @@ public class CryptoUtils {
 
             newPath += "." + name;
 
-            String outFile = newPath + "." + ivString + "." + "aes";
+            String outFile = newPath + "." + ivString + ".aes";
             FileUtils.write(outFile, output);
 
             // delete the original file
@@ -48,21 +53,24 @@ public class CryptoUtils {
     }
 
     // decrypts a file given a filepath+name and a secretKey, then deletes the encrypted file
-    public static void decrypt(String filePath, SecretKeySpec secretKey) {
+    public static void decrypt(String filePath, SecretKeySpec secretKey, String hashDir) {
         try {
-            // split up filePath: 0=originalpath, 1=originalname, 2=originalextension, 3=iv, 4=aes
+            // split up filePath: 0=originalpath, 1=originalname, 2=originalextension, 3=iv, 4=pwHash, 5=aes
             String[] parts = filePath.split("[.]");
-
             // setup crypto preferences
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
             byte[] iv = Hex.decode(parts[2]);
             cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
 
             // read encrypted file
-            byte[] input = FileUtils.readAllBytes(filePath);
+            byte[] file = FileUtils.readAllBytes(filePath);
+
+            String hash = Hex.toHexString(getHash(concatenate(secretKey.getEncoded(), file)));
+
+            String[] hashFiles = FileUtils.getAllFileNamesWOExt(hashDir, "flipflop");
 
             // decrypt file
-            byte[] output = cipher.doFinal(input);
+            byte[] output = cipher.doFinal(file);
 
             String name = new String(cipher.doFinal(Hex.decode(parts[1])), StandardCharsets.UTF_8);
 
@@ -224,5 +232,18 @@ public class CryptoUtils {
             e.printStackTrace();
             return false;
         }
+    }
+
+    // helper functions
+    public static  byte[] concatenate(byte[] a, byte[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+
+        @SuppressWarnings("unchecked")
+        byte[] c = (byte[]) Array.newInstance(a.getClass().getComponentType(), aLen + bLen);
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+
+        return c;
     }
 }

@@ -33,9 +33,7 @@ public class Main extends Application {
         // instruct user to put files in filesafe directory and prompt for strong password
         System.out.println("Place the files you want to encrypt inside " + dir);
         char[] pw = InputUtils.requireStrongPassword();
-        byte[] hash = CryptoUtils.getHash(pw.toString().getBytes(StandardCharsets.UTF_8));
-        String hashString = Hex.toHexString(hash);
-        FileUtils.write(hashDir + hashString + ".hash", hash);
+        //String hash = Hex.toHexString(CryptoUtils.getHash(pw.toString().getBytes(StandardCharsets.UTF_8)));
 
         // generate secret key with PBKDF
         SecretKeySpec secretKey = CryptoUtils.generateSecretKey(pw);
@@ -46,12 +44,12 @@ public class Main extends Application {
             // decrypt all
             if(action == 'd')
             for (String s : FileUtils.getAllFileNames(dir, "aes"))
-                CryptoUtils.decrypt(s, secretKey);
+                CryptoUtils.decrypt(s, secretKey, hashDir);
 
             // encrypt all
             if(action == 'e')
             for (String s : FileUtils.getAllFileNamesWOExt(dir, "aes"))
-                CryptoUtils.encrypt(s, secretKey);
+                CryptoUtils.encrypt(s, secretKey, hashDir);
         }
 
         // standard dummy code
