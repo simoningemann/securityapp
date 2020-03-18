@@ -7,6 +7,7 @@ import javax.crypto.spec.*;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
+import java.util.Arrays;
 
 public class CryptoUtils {
 
@@ -73,7 +74,7 @@ public class CryptoUtils {
             FileUtils.delete(filePath);
 
         } catch (Exception e)  {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
@@ -217,18 +218,11 @@ public class CryptoUtils {
             digest.update(data);
             byte[] hash = digest.digest();
 
-            if(hash.length != hashToVerify.length)
-                return false;
-
-            //check if each byte matches
-            for (int i = 0; i < data.length; i++)
-                if (hash[i] != hashToVerify[i])
-                    return false;
-            return true;
+            return Arrays.equals(hash, hashToVerify);
         }
         catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 }
