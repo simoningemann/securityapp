@@ -22,15 +22,15 @@ public class CryptoUtils {
             // read the file
             byte[] file = FileUtils.readAllBytes(filePath);
 
-            // hash the file with the key
-            byte[] hash = getHash(concatenate(secretKey.getEncoded(), file));
-            FileUtils.write(hashDir + Hex.toHexString(hash), hash);
-
             // encrypt the file
             byte[] output = cipher.doFinal(file);
 
             // write new encrypted file
             String ivString = Hex.toHexString(cipher.getIV());
+
+            // hash the IV with the key
+            byte[] hash = getHash(concatenate(secretKey.getEncoded(), ivString.getBytes()));
+            FileUtils.write(hashDir + Hex.toHexString(hash), hash);
 
             String[] parts = filePath.split("/");
             String newPath = "";
@@ -55,7 +55,7 @@ public class CryptoUtils {
     // decrypts a file given a filepath+name and a secretKey, then deletes the encrypted file
     public static void decrypt(String filePath, SecretKeySpec secretKey, String hashDir) {
         try {
-            // split up filePath: 0=originalpath, 1=originalname, 2=originalextension, 3=iv, 4=pwHash, 5=aes
+            // split up filePath: 0=originalpath, 1=originalname+ext, 2=iv, 3=aes
             String[] parts = filePath.split("[.]");
             // setup crypto preferences
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
@@ -65,9 +65,12 @@ public class CryptoUtils {
             // read encrypted file
             byte[] file = FileUtils.readAllBytes(filePath);
 
-            String hash = Hex.toHexString(getHash(concatenate(secretKey.getEncoded(), file)));
-
-            String[] hashFiles = FileUtils.getAllFileNamesWOExt(hashDir, "flipflop");
+            // check if key + iv hash exists
+            String hash = Hex.toHexString(getHash(concatenate(secretKey.getEncoded(), parts[2].getBytes())));
+            if(!FileUtils.dirContainsFileName(hashDir, hash)) {
+                System.out.println("password incorrect for file:" + filePath);
+                return;
+            }
 
             // decrypt file
             byte[] output = cipher.doFinal(file);
@@ -80,6 +83,7 @@ public class CryptoUtils {
 
             // delete the encrypted file
             FileUtils.delete(filePath);
+            FileUtils.delete(hashDir + hash);
 
         } catch (Exception e)  {
             e.printStackTrace();
