@@ -24,7 +24,8 @@ import static java.security.Security.addProvider;
 public class Main extends Application {
 
     SecretKeySpec secretKey = null;
-    String dir = System.getProperty("user.home") + "/.filesafe/";
+    String userHome = System.getProperty("user.home");
+    String dir = userHome + "/.filesafe/";
     String hashDir = dir + "/.hashes/";
 
     @Override
@@ -64,7 +65,9 @@ public class Main extends Application {
         Button encryptButton = new Button("Encrypt");
         Button decryptButton = new Button("Decrypt");
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(userHome));
         DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(new File(userHome));
 
         pwButton.setOnAction(action -> {
             char[] pw = passwordField.getText().toCharArray();
