@@ -8,11 +8,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.GridPane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 // remember to add the bouncy castle library file
 import javax.crypto.spec.SecretKeySpec;
 
+import java.io.File;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.security.Security.addProvider;
@@ -20,6 +24,8 @@ import static java.security.Security.addProvider;
 public class Main extends Application {
 
     SecretKeySpec secretKey = null;
+    String dir = System.getProperty("user.home") + "/.filesafe/";
+    String hashDir = dir + "/.hashes/";
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -28,8 +34,6 @@ public class Main extends Application {
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
         // setup variables and make filesafe directory if none exists
-        String dir = System.getProperty("user.home") + "/filesafe/";
-        String hashDir = dir + "/.hashes/";
         FileUtils.makeDir(dir);
         FileUtils.makeDir(hashDir);
 
@@ -59,6 +63,8 @@ public class Main extends Application {
         GridPane gridPane = new GridPane();
         Button encryptButton = new Button("Encrypt");
         Button decryptButton = new Button("Decrypt");
+        FileChooser fileChooser = new FileChooser();
+        DirectoryChooser directoryChooser = new DirectoryChooser();
 
         pwButton.setOnAction(action -> {
             char[] pw = passwordField.getText().toCharArray();
@@ -77,6 +83,17 @@ public class Main extends Application {
                 gridPane.getChildren().remove(encryptButton);
                 gridPane.getChildren().remove(decryptButton);
             }
+        });
+
+        encryptButton.setOnAction(action -> {
+            List<File> files = fileChooser.showOpenMultipleDialog(primaryStage);
+            for (File file : files)
+                CryptoUtils.encrypt(file.getAbsolutePath(), secretKey, hashDir);
+        });
+
+        decryptButton.setOnAction(action -> {
+            for (String file : FileUtils.getAllFileNames(directoryChooser.showDialog(primaryStage).getAbsolutePath() + "/", "aes"))
+                CryptoUtils.decrypt(file, secretKey, hashDir);
         });
 
         gridPane.add(pwLabel, 0, 0, 1, 1);
