@@ -4,6 +4,11 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.bouncycastle.util.encoders.Hex;
 
@@ -28,7 +33,7 @@ public class Main extends Application {
         String hashDir = dir + "/.hashes/";
         FileUtils.makeDir(dir);
         FileUtils.makeDir(hashDir);
-        char action = 's';
+        /*char action = 's';
 
         // instruct user to put files in filesafe directory and prompt for strong password
         System.out.println("Place the files you want to encrypt inside " + dir);
@@ -50,12 +55,31 @@ public class Main extends Application {
             if(action == 'e')
             for (String s : FileUtils.getAllFileNamesWOExt(dir, "aes"))
                 CryptoUtils.encrypt(s, secretKey, hashDir);
-        }
+        }*/
 
         // standard dummy code
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setTitle("FileSafe");
+
+        PasswordField passwordField = new PasswordField();
+        Button pwButton = new Button("Check Password");
+        Label pwLabel = new Label("Password");
+        Label checklabel = new Label("Not ok");
+        GridPane gridPane = new GridPane();
+
+        pwButton.setOnAction(action -> {
+            if(InputUtils.isPasswordStrong(passwordField.getText().toCharArray(), 10))
+                checklabel.setText("Ok");
+            else
+                checklabel.setText("Not ok");
+        });
+
+        gridPane.add(pwLabel, 0, 0, 1, 1);
+        gridPane.add(passwordField, 1, 0, 1,1);
+        gridPane.add(checklabel, 0, 1, 1, 1);
+        gridPane.add(pwButton, 1, 1, 1, 1);
+
+        primaryStage.setScene(new Scene(gridPane, 300, 275));
         primaryStage.show();
     }
 

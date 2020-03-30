@@ -20,7 +20,7 @@ public class InputUtils {
         int minLength = 10;
         char [] password = prompt("Choose a password of at least " + minLength + " characters, which contains at least one capital letter, one lower case letter, one number and one symbol.");
 
-        while(isPasswordStrong(password, minLength))
+        while(!isPasswordStrong(password, minLength))
             password = prompt("Choose a password of at least " + minLength + " characters, which contains at least one capital letter, one lower case letter, one number and one special character.");
         
         return password;
@@ -28,7 +28,7 @@ public class InputUtils {
     }
 
     public static boolean isPasswordStrong(char[] password, int minLength) {
-        return password.length < minLength || !containsUpper(password) || !containsLower(password) || !containsDigit(password) || !containsSpecialCharacter(password);
+        return (password.length >= minLength && containsUpper(password) && containsLower(password) && containsDigit(password) && containsSpecialCharacter(password));
     }
 
     public static boolean containsUpper (char[] string) {

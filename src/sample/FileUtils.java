@@ -34,6 +34,16 @@ public class FileUtils {
         }
     }
 
+    public static boolean isWriteSuccessful(String outputFile, byte[] output) {
+        try {
+            Files.write(Paths.get(outputFile), output);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static void delete(String filePath) {
         new File(filePath).delete();
     }

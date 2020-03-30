@@ -7,7 +7,7 @@ import javax.crypto.spec.*;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.interfaces.RSAPrivateKey;
+import java.util.Base64;
 import java.util.Arrays;
 
 public class CryptoUtils {
@@ -42,13 +42,13 @@ public class CryptoUtils {
             newPath += "." + name;
 
             String outFile = newPath + "." + ivString + ".aes";
-            FileUtils.write(outFile, output);
 
-            // delete the original file
-            FileUtils.delete(filePath);
+            if (FileUtils.isWriteSuccessful(outFile, output))
+                FileUtils.delete(filePath);
+
         }
         catch (Exception e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
         }
     }
 
