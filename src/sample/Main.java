@@ -60,15 +60,16 @@ public class Main extends Application {
         Button pwButton = new Button("Check/Set Password");
         Label pwLabel = new Label("Password");
         Label isOkLabel = new Label("Not ok");
-        Label checklabel = new Label("Password must be at least 10 symbols and must have numbers,\n lower case letters, uppercase letters and special characters.");
+        Label checklabel = new Label("The password must contain at least 10 symbols and one number,\n one lower case letter, one uppercase letter and one special character.\n ");
         GridPane gridPane = new GridPane();
-        Label encryptLabel = new Label("Choose which files to encrypt.");
+        Label encryptLabel = new Label(" \nChoose which files to encrypt.");
         Button encryptButton = new Button("Encrypt");
-        Label encryptAllLabel = new Label("Choose which folder to encrypt.");
+        Label encryptAllLabel = new Label(" \nChoose which folder to encrypt.\nNotice: Also encrypts files in subfolders.");
         Button encryptAllButton = new Button("Encrypt All");
-        Label decryptLabel = new Label("Choose which folder to decrypt.");
+        Label decryptLabel = new Label(" \nChoose which folder to decrypt.\nNotice: Also encrypts files in subfolders.");
         Button decryptButton = new Button("Decrypt All");
-        Label hiddenLabel = new Label("Note that encrypted files are hidden, which is why they may \n seem to disappear. They are still stored in the same folder.");
+        Label hiddenLabel = new Label(" \nNote that encrypted files are hidden, which is why they may \n seem to disappear. They are still stored in the same folder.\n ");
+        Label statusLabel = new Label("Status: Ready");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(userHome));
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -86,6 +87,7 @@ public class Main extends Application {
                 gridPane.add(decryptLabel, 0, 9, 1, 1);
                 gridPane.add(decryptButton, 0, 10, 1, 1);
                 gridPane.add(hiddenLabel, 0, 11, 1, 1);
+                gridPane.add(statusLabel, 0, 13, 1, 1);
             }
             else {
                 if (isOkLabel.getText().equals("Not ok"))
@@ -100,30 +102,37 @@ public class Main extends Application {
                 gridPane.getChildren().remove(decryptLabel);
                 gridPane.getChildren().remove(decryptButton);
                 gridPane.getChildren().remove(hiddenLabel);
+                gridPane.getChildren().remove(statusLabel);
             }
         });
 
         encryptButton.setOnAction(action -> {
+            statusLabel.setText("Status: Encryption successful");
             List<File> files = fileChooser.showOpenMultipleDialog(primaryStage);
             for (File file : files)
-                CryptoUtils.encrypt(file.getAbsolutePath(), secretKey, hashDir);
+                if(!CryptoUtils.encrypt(file.getAbsolutePath(), secretKey, hashDir))
+                    statusLabel.setText("Status: One or more files were not encrypted due to their names being too long.");
         });
 
         encryptAllButton.setOnAction(action -> {
+            statusLabel.setText("Status: Encryption successful");
             for (String file : FileUtils.getAllFileNamesWOExtRecursive(directoryChooser.showDialog(primaryStage).getAbsolutePath() + "/", "aes"))
-                CryptoUtils.encrypt(file, secretKey, hashDir);
+                if(!CryptoUtils.encrypt(file, secretKey, hashDir))
+                    statusLabel.setText("Status: One or more files were not encrypted due to their names being too long.");
         });
 
         decryptButton.setOnAction(action -> {
+            statusLabel.setText("Decryption successful.");
             for (String file : FileUtils.getAllFileNamesRecursive(directoryChooser.showDialog(primaryStage).getAbsolutePath() + "/", "aes"))
-                CryptoUtils.decrypt(file, secretKey, hashDir);
+                if(!CryptoUtils.decrypt(file, secretKey, hashDir))
+                    statusLabel.setText("Status: One or more files were not decrypted because the password is incorrect.");
         });
 
-        gridPane.add(pwLabel, 0, 0, 1, 1);
-        gridPane.add(passwordField, 0, 1, 1,1);
-        gridPane.add(pwButton, 0, 2, 1, 1);
-        gridPane.add(isOkLabel, 0, 3, 1, 1);
-        gridPane.add(checklabel, 0, 4, 1, 1);
+        gridPane.add(checklabel, 0, 0, 1, 1);
+        gridPane.add(pwLabel, 0, 1, 1, 1);
+        gridPane.add(passwordField, 0, 2, 1,1);
+        gridPane.add(pwButton, 0, 3, 1, 1);
+        gridPane.add(isOkLabel, 0, 4, 1, 1);
 
 
         primaryStage.setScene(new Scene(gridPane, 600, 600));

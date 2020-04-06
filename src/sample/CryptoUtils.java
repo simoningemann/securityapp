@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class CryptoUtils {
 
     // encrypts a file given a filepath+name and a password, then deletes the plaintext
-    public static void encrypt(String filePath, SecretKeySpec secretKey, String hashDir){
+    public static boolean encrypt(String filePath, SecretKeySpec secretKey, String hashDir){
         try {
             // setup crypto preferences
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "BC");
@@ -43,17 +43,21 @@ public class CryptoUtils {
 
             String outFile = newPath + "." + ivString + ".aes";
 
-            if (FileUtils.isWriteSuccessful(outFile, output))
+            if (FileUtils.isWriteSuccessful(outFile, output)) {
                 FileUtils.delete(filePath);
+                return true;
+            }
 
+            return false;
         }
         catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 
     // decrypts a file given a filepath+name and a secretKey, then deletes the encrypted file
-    public static void decrypt(String filePath, SecretKeySpec secretKey, String hashDir) {
+    public static boolean decrypt(String filePath, SecretKeySpec secretKey, String hashDir) {
         try {
             // split up filePath: 0=originalpath, 1=originalname+ext, 2=iv, 3=aes
             String[] parts = filePath.split("[.]");
@@ -69,7 +73,7 @@ public class CryptoUtils {
             String hash = Hex.toHexString(getHash(concatenate(secretKey.getEncoded(), parts[2].getBytes())));
             if(!FileUtils.dirContainsFileName(hashDir, hash)) {
                 System.out.println("password incorrect for file:" + filePath);
-                return;
+                return false;
             }
 
             // decrypt file
@@ -85,8 +89,11 @@ public class CryptoUtils {
             FileUtils.delete(filePath);
             FileUtils.delete(hashDir + hash);
 
+            return true;
+
         } catch (Exception e)  {
             e.printStackTrace();
+            return false;
         }
     }
 
