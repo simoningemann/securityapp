@@ -62,8 +62,13 @@ public class Main extends Application {
         Label isOkLabel = new Label("Not ok");
         Label checklabel = new Label("Password must be at least 10 symbols and must have numbers,\n lower case letters, uppercase letters and special characters.");
         GridPane gridPane = new GridPane();
+        Label encryptLabel = new Label("Choose which files to encrypt.");
         Button encryptButton = new Button("Encrypt");
-        Button decryptButton = new Button("Decrypt");
+        Label encryptAllLabel = new Label("Choose which folder to encrypt.");
+        Button encryptAllButton = new Button("Encrypt All");
+        Label decryptLabel = new Label("Choose which folder to decrypt.");
+        Button decryptButton = new Button("Decrypt All");
+        Label hiddenLabel = new Label("Note that encrypted files are hidden, which is why they may \n seem to disappear. They are still stored in the same folder.");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File(userHome));
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -74,8 +79,13 @@ public class Main extends Application {
             if(InputUtils.isPasswordStrong(pw, 10)) {
                 isOkLabel.setText("Ok");
                 secretKey = CryptoUtils.generateSecretKey(pw);
-                gridPane.add(encryptButton, 0, 5, 1, 1);
-                gridPane.add(decryptButton, 0, 6, 1, 1);
+                gridPane.add(encryptLabel, 0, 5, 1, 1);
+                gridPane.add(encryptButton, 0, 6, 1, 1);
+                gridPane.add(encryptAllLabel, 0, 7, 1, 1);
+                gridPane.add(encryptAllButton, 0, 8, 1, 1);
+                gridPane.add(decryptLabel, 0, 9, 1, 1);
+                gridPane.add(decryptButton, 0, 10, 1, 1);
+                gridPane.add(hiddenLabel, 0, 11, 1, 1);
             }
             else {
                 if (isOkLabel.getText().equals("Not ok"))
@@ -83,8 +93,13 @@ public class Main extends Application {
                 else
                     isOkLabel.setText("Not ok");
 
+                gridPane.getChildren().remove(encryptLabel);
                 gridPane.getChildren().remove(encryptButton);
+                gridPane.getChildren().remove(encryptAllLabel);
+                gridPane.getChildren().remove(encryptAllButton);
+                gridPane.getChildren().remove(decryptLabel);
                 gridPane.getChildren().remove(decryptButton);
+                gridPane.getChildren().remove(hiddenLabel);
             }
         });
 
@@ -94,8 +109,13 @@ public class Main extends Application {
                 CryptoUtils.encrypt(file.getAbsolutePath(), secretKey, hashDir);
         });
 
+        encryptAllButton.setOnAction(action -> {
+            for (String file : FileUtils.getAllFileNamesWOExtRecursive(directoryChooser.showDialog(primaryStage).getAbsolutePath() + "/", "aes"))
+                CryptoUtils.encrypt(file, secretKey, hashDir);
+        });
+
         decryptButton.setOnAction(action -> {
-            for (String file : FileUtils.getAllFileNames(directoryChooser.showDialog(primaryStage).getAbsolutePath() + "/", "aes"))
+            for (String file : FileUtils.getAllFileNamesRecursive(directoryChooser.showDialog(primaryStage).getAbsolutePath() + "/", "aes"))
                 CryptoUtils.decrypt(file, secretKey, hashDir);
         });
 
@@ -106,7 +126,7 @@ public class Main extends Application {
         gridPane.add(checklabel, 0, 4, 1, 1);
 
 
-        primaryStage.setScene(new Scene(gridPane, 600, 275));
+        primaryStage.setScene(new Scene(gridPane, 600, 600));
         primaryStage.show();
     }
 

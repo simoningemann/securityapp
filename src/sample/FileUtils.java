@@ -90,14 +90,57 @@ public class FileUtils {
         return names;
     }
 
-    public static String[] getAllFileNamesWOExt(String dir, String ext) {
+    public static String[] getAllFileNamesRecursive(String dir, String ext) {
         ArrayList<String> results = new ArrayList<String>();
         File[] files = new File(dir).listFiles();
         for (File file : files) {
             if (file.isFile()) {
                 String fname = file.getName();
                 String[] parts = fname.split("[.]");
+                if (parts[parts.length-1].equals(ext)) results.add(dir + fname);
+            }
+            else if(file.isDirectory() && !file.isHidden()) {
+                for (String name : getAllFileNamesRecursive(file.getAbsolutePath() + "/", ext))
+                    results.add(name);
+            }
+        }
+
+        String[] names = new String[results.size()];
+        for (int i=0; i<names.length; i++) {
+            names[i] = results.get(i);
+        }
+        return names;
+    }
+
+    public static String[] getAllFileNamesWOExt(String dir, String ext) {
+        ArrayList<String> results = new ArrayList<String>();
+        File[] files = new File(dir).listFiles();
+        for (File file : files) {
+            if (file.isFile() && !file.isHidden()) {
+                String fname = file.getName();
+                String[] parts = fname.split("[.]");
                 if (!parts[parts.length-1].equals(ext)) results.add(dir + fname);
+            }
+        }
+        String[] names = new String[results.size()];
+        for (int i=0; i<names.length; i++) {
+            names[i] = results.get(i);
+        }
+        return names;
+    }
+
+    public static String[] getAllFileNamesWOExtRecursive(String dir, String ext) {
+        ArrayList<String> results = new ArrayList<String>();
+        File[] files = new File(dir).listFiles();
+        for (File file : files) {
+            if (file.isFile() && !file.isHidden()) {
+                String fname = file.getName();
+                String[] parts = fname.split("[.]");
+                if (!parts[parts.length-1].equals(ext) && !(fname.charAt(0) == '.')) results.add(dir + fname);
+            }
+            else if(file.isDirectory() && !file.isHidden()) {
+                for (String name : getAllFileNamesWOExtRecursive(file.getAbsolutePath() + "/", ext))
+                    results.add(name);
             }
         }
         String[] names = new String[results.size()];
