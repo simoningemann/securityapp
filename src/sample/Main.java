@@ -23,6 +23,7 @@ import static java.security.Security.addProvider;
 
 public class Main extends Application {
 
+    // set up file system directory variables
     SecretKeySpec secretKey = null;
     String userHome = System.getProperty("user.home");
     String dir = userHome + "/.filesafe/";
@@ -34,25 +35,12 @@ public class Main extends Application {
         // add bouncy castle as security provider
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
-        // setup variables and make filesafe directory if none exists
+        //make filesafe directory if none exist
         FileUtils.makeDir(dir);
         FileUtils.makeDir(hashDir);
 
-        /* listen for user action
-        while(action != 'f') {
-            action = InputUtils.prompt("Select action e or d:")[0];
-            // decrypt all
-            if(action == 'd')
-            for (String s : FileUtils.getAllFileNames(dir, "aes"))
-                CryptoUtils.decrypt(s, secretKey, hashDir);
+        //////////////////// UI SECTION /////////////////////////////
 
-            // encrypt all
-            if(action == 'e')
-            for (String s : FileUtils.getAllFileNamesWOExt(dir, "aes"))
-                CryptoUtils.encrypt(s, secretKey, hashDir);
-        }*/
-
-        // standard dummy code
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("FileSafe");
 
