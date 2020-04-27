@@ -11,6 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.bouncycastle.util.test.Test;
 
 // remember to add the bouncy castle library file
 import javax.crypto.spec.SecretKeySpec;
@@ -28,6 +29,7 @@ public class Main extends Application {
     String userHome = System.getProperty("user.home");
     String dir = userHome + "/.filesafe/";
     String hashDir = dir + "/.hashes/";
+    String testDir = userHome + "/filesafetestdir/";
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -35,12 +37,17 @@ public class Main extends Application {
         // add bouncy castle as security provider
         addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
+
         //make filesafe directory if none exist
         FileUtils.makeDir(dir);
         FileUtils.makeDir(hashDir);
+        FileUtils.makeDir(testDir);
+
+        /////////////////// RUN TESTS ////////////////////
+        Tests.Encrypt(testDir, hashDir);
+        Tests.Decrypt(testDir, hashDir);
 
         //////////////////// UI SECTION /////////////////////////////
-
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("FileSafe");
 
@@ -63,6 +70,8 @@ public class Main extends Application {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setInitialDirectory(new File(userHome));
 
+
+        ////////////// PASSWORD BUTTON ///////////////////////
         pwButton.setOnAction(action -> {
             char[] pw = passwordField.getText().toCharArray();
             if(InputUtils.isPasswordStrong(pw, 10)) {
@@ -94,6 +103,7 @@ public class Main extends Application {
             }
         });
 
+        ////////////// ENCRYPT BUTTON ///////////////////////
         encryptButton.setOnAction(action -> {
             statusLabel.setText("Status: Encryption successful");
             List<File> files = fileChooser.showOpenMultipleDialog(primaryStage);
@@ -102,6 +112,7 @@ public class Main extends Application {
                     statusLabel.setText("Status: One or more files were not encrypted due to their names being too long.");
         });
 
+        ////////////// ENCRYPT ALL BUTTON ///////////////////////
         encryptAllButton.setOnAction(action -> {
             statusLabel.setText("Status: Encryption successful");
             for (String file : FileUtils.getAllFileNamesWOExtRecursive(directoryChooser.showDialog(primaryStage).getAbsolutePath() + "/", "aes"))
@@ -109,6 +120,7 @@ public class Main extends Application {
                     statusLabel.setText("Status: One or more files were not encrypted due to their names being too long.");
         });
 
+        ////////////// DECRYPT BUTTON ///////////////////////
         decryptButton.setOnAction(action -> {
             statusLabel.setText("Decryption successful.");
             for (String file : FileUtils.getAllFileNamesRecursive(directoryChooser.showDialog(primaryStage).getAbsolutePath() + "/", "aes"))
@@ -116,6 +128,7 @@ public class Main extends Application {
                     statusLabel.setText("Status: One or more files were not decrypted because the password is incorrect.");
         });
 
+        ////////////// SET UP START UI ///////////////////////
         gridPane.add(checklabel, 0, 0, 1, 1);
         gridPane.add(pwLabel, 0, 1, 1, 1);
         gridPane.add(passwordField, 0, 2, 1,1);
