@@ -17,7 +17,7 @@ Possible threats to the confidentiality of the user data could be:
 2. A thief who steals the hard drive and tries to extract the data.
 3. A hacker who somehow gets access to the data remotely.
 
-The solution is to use a strong encryption schema and only allow for decryption if the user supplies the correct password. One weakness is of course, that if the user forgets their password, the files could be lost forever. But this application sacrifices convienience for maximum security.
+The solution is to use a strong encryption schema and only allow for decryption if the user supplies the correct password. One weakness is of course, that if the user forgets their password, the files could be lost forever. But this application sacrifices convienience for maximum security. 
 
 ### Security Design Patterns
 No security design patterns were implemented in this application. Here it will be explained why.
